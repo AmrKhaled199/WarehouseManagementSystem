@@ -1,0 +1,105 @@
+﻿@model IEnumerable<WMS.Models.Product>
+@{
+    ViewData["Title"] = "Products";
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+
+    <nav class="navbar navbar-dark bg-dark px-4">
+        <span class="navbar-brand">📦 Products</span>
+        <a href="/Home/Index" class="btn btn-outline-light btn-sm">← Home</a>
+    </nav>
+
+    <div class="container mt-4">
+
+        <!-- إجماليات + زر إضافة -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary shadow text-center p-3">
+                    <h6>📦 Total Products</h6>
+                    <h2>@ViewBag.TotalCount</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success shadow text-center p-3">
+                    <h6>⚖️ Total Weight</h6>
+                    <h2>@ViewBag.TotalWeight kg</h2>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex align-items-center">
+                <a href="/Product/Add" class="btn btn-warning w-100 py-3 fw-bold fs-5">➕ Add Product</a>
+            </div>
+        </div>
+
+        <!-- الجدول -->
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">📋 Products List</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Weight (kg)</th>
+                            <th>Status</th>
+                            <th>Entry Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in Model)
+                        {
+                            <tr>
+                                <td>@p.Id</td>
+                                <td>@p.Name</td>
+                                <td>@p.Category</td>
+                                <td>@p.WeightKg</td>
+                                <td>
+                                    @if (p.Status == "InWarehouse")
+                                    {
+                                        <span class="badge bg-success">In Warehouse</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Delivered</span>
+                                    }
+                                </td>
+                                <td>@p.EntryDate.ToString("dd/MM/yyyy")</td>
+                                <td class="d-flex gap-1">
+                                    <a href="/Product/Details/@p.Id" class="btn btn-info btn-sm">Details</a>
+
+                                    @if (p.Status == "InWarehouse")
+                                    {
+                                        <form method="post" action="/Product/Deliver/@p.Id" style="display:inline">
+                                            <button type="submit" class="btn btn-warning btn-sm"
+                                                    onclick="return confirm('Confirm delivery?')">
+                                                Deliver
+                                            </button>
+                                        </form>
+                                    }
+
+                                    <form method="post" action="/Product/Delete/@p.Id" style="display:inline">
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Are you sure you want to delete?')">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+﻿@model WarehouseManagementSystem.ViewModels.ProductViewModel
+@{
+    ViewData["Title"] = "Add Product";
+}
+
+<div class="card shadow mx-auto mt-4" style="max-width:700px">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">📦 Add New Product</h5>
+    </div>
+    <div class="card-body">
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        }
+
+        <form method="post" asp-action="Add">
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label asp-for="Name" class="form-label">Product Name</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Category" class="form-label">Category</label>
+                    <select asp-for="Category" class="form-select">
+                        <option value="">-- Select --</option>
+                        <option>Fruits</option>
+                        <option>Vegetables</option>
+                        <option>Food</option>
+                        <option>Electronics</option>
+                        <option>Other</option>
+                    </select>
+                    <span asp-validation-for="Category" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="WeightKg" class="form-label">Weight (kg)</label>
+                    <input asp-for="WeightKg" type="number" step="0.1" class="form-control" />
+                    <span asp-validation-for="WeightKg" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ExpiryDate" class="form-label">Expiry Date</label>
+                    <input asp-for="ExpiryDate" type="date" class="form-control" />
+                    <span asp-validation-for="ExpiryDate" class="text-danger small"></span>
+                </div>
+
+                <hr />
+
+                <div class="col-md-6">
+                    <label asp-for="SenderName" class="form-label">Sender Name</label>
+                    <input asp-for="SenderName" class="form-control" />
+                    <span asp-validation-for="SenderName" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="SenderEmail" class="form-label">Sender Email</label>
+                    <input asp-for="SenderEmail" type="email" class="form-control" />
+                    <span asp-validation-for="SenderEmail" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ReceiverName" class="form-label">Receiver Name</label>
+                    <input asp-for="ReceiverName" class="form-control" />
+                    <span asp-validation-for="ReceiverName" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ReceiverEmail" class="form-label">Receiver Email</label>
+                    <input asp-for="ReceiverEmail" type="email" class="form-control" />
+                    <span asp-validation-for="ReceiverEmail" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 mt-2">
+                    <button type="submit" class="btn btn-success w-100">💾 Save Product</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

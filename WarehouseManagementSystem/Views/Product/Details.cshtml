@@ -1,0 +1,98 @@
+﻿    @model WMS.Models.Product
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+
+    <nav class="navbar navbar-dark bg-dark px-4">
+        <span class="navbar-brand">🔍 Product Details</span>
+        <a href="/Product/Index" class="btn btn-outline-light btn-sm">← Back to List</a>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="card shadow mx-auto" style="max-width:650px">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">📦 @Model.Name</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tr><th>Name</th><td>@Model.Name</td></tr>
+                    <tr><th>Category</th><td>@Model.Category</td></tr>
+                    <tr><th>Weight</th><td>@Model.WeightKg kg</td></tr>
+                    <tr><th>Expiry Date</th><td>@Model.ExpiryDate.ToString("dd/MM/yyyy")</td></tr>
+                    <tr><th>Sender</th><td>@Model.SenderName (@Model.SenderEmail)</td></tr>
+                    <tr><th>Receiver</th><td>@Model.ReceiverName (@Model.ReceiverEmail)</td></tr>
+                    <tr>
+                        <th>Status</th>
+                        <td>
+                            @if (Model.Status == "InWarehouse")
+                            {
+                                <span class="badge bg-success fs-6">In Warehouse</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary fs-6">Delivered</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr><th>Entry Date</th><td>@Model.EntryDate.ToString("dd/MM/yyyy HH:mm")</td></tr>
+                    <tr>
+                        <th>Exit Date</th>
+                        <td>
+                            @if (Model.ExitDate.HasValue)
+                            {
+                                @Model.ExitDate.Value.ToString("dd/MM/yyyy HH:mm")
+                            }
+                            else
+                            {
+                                <span class="text-muted">Still in warehouse</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Storage Fee</strong></td>
+                        <td>@ViewBag.StorageFee?.TotalFee $</td>
+                    </tr>
+                </table>
+                <!-- Storage Fee -->
+                @if (ViewBag.StorageFee != null)
+                {
+                    <div class="alert alert-warning mt-3">
+                        <h6>💰 Storage Fee</h6>
+                        <table class="table table-sm mb-0">
+                            <tr><th>Rate</th><td>@ViewBag.StorageFee.RatePerHourPerKg $ / hour / kg</td></tr>
+                            <tr><th>Total Fee</th><td><strong>$@ViewBag.StorageFee.TotalFee</strong></td></tr>
+                            <tr><th>Calculated At</th><td>@ViewBag.StorageFee.CalculatedAt.ToString("dd/MM/yyyy HH:mm")</td></tr>
+                        </table>
+                    </div>
+                }
+
+                <div class="d-flex gap-2 mt-3">
+                    @if (Model.Status == "InWarehouse")
+                    {
+                        <form method="post" action="/Product/Deliver/@Model.Id">
+                            <button type="submit" class="btn btn-warning"
+                                    onclick="return confirm('Confirm delivery?')">
+                                ✅ Mark as Delivered
+                            </button>
+                        </form>
+                    }
+                    <form method="post" action="/Product/Delete/@Model.Id">
+                        <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Are you sure?')">
+                            🗑️ Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

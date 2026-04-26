@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="WarehouseManagementSystem/WarehouseManagementSystem.csproj" />
+  <Project Path="WMS.BLL/WMS.BLL.csproj" />
+  <Project Path="WMS.DAL/WMS.DAL.csproj" />
+  <Project Path="WMS.Models/WMS.Models.csproj" />
+</Solution>

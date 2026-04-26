@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-dark bg-dark px-4">
+        <a class="navbar-brand" href="/Home/Index">🏭 Khaled Family WMS</a>
+        <div class="d-flex align-items-center gap-3">
+            @if (Context.Session.GetString("UserName") != null)
+            {
+                <span class="text-white">👤 @Context.Session.GetString("UserName")</span>
+                <a href="/Product/Add" class="btn btn-outline-success btn-sm">📥 Import</a>
+                <a href="/Product/Index" class="btn btn-outline-warning btn-sm">📤 Export</a>
+                <a href="/Report/Index" class="btn btn-outline-info btn-sm">📊 Reports</a>
+                <a href="/Log/Index" class="btn btn-outline-light btn-sm">📋 Logs</a>
+                <a href="/Account/Logout" class="btn btn-outline-danger btn-sm">Exit</a>
+            }
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        @RenderBody()
+    </div>
+
+    <footer class="text-center text-muted mt-5 mb-3">
+        <small>WMS - Khaled Family © 2026</small>
+    </footer>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>
