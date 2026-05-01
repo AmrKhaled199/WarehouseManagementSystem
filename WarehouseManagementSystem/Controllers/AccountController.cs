@@ -13,7 +13,10 @@ namespace WarehouseManagementSystem.Controllers
         {
             _authService = authService;
         }
-
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
         // GET: Login
         public IActionResult Login()
         {

@@ -15,7 +15,7 @@ namespace WMS.BLL.Services
             ExcelPackage.License.SetNonCommercialPersonal("YourName");
         }
 
-        public byte[] GenerateProductsReport()
+        public byte[] GenerateProductsReport(int? month = null, int? year = null)
         {
             using var package = new ExcelPackage();
             var sheet = package.Workbook.Worksheets.Add("Products");
@@ -31,7 +31,6 @@ namespace WMS.BLL.Services
             sheet.Cells[1, 8].Value = "Entry Date";
             sheet.Cells[1, 9].Value = "Exit Date";
 
-            // تنسيق الـ Header
             using (var range = sheet.Cells[1, 1, 1, 9])
             {
                 range.Style.Font.Bold = true;
@@ -40,11 +39,15 @@ namespace WMS.BLL.Services
                 range.Style.Font.Color.SetColor(System.Drawing.Color.White);
             }
 
-            // Data
-            var products = _context.Products.ToList();  
-            for (int i = 0; i < products.Count; i++)
+            // Filter by month/year
+            var products = _context.Products.AsQueryable();
+            if (month.HasValue && year.HasValue)
+                products = products.Where(p => p.EntryDate.Month == month && p.EntryDate.Year == year);
+
+            var list = products.ToList();
+            for (int i = 0; i < list.Count; i++)
             {
-                var p = products[i];
+                var p = list[i];
                 sheet.Cells[i + 2, 1].Value = p.Id;
                 sheet.Cells[i + 2, 2].Value = p.Name;
                 sheet.Cells[i + 2, 3].Value = p.Category;
@@ -60,12 +63,11 @@ namespace WMS.BLL.Services
             return package.GetAsByteArray();
         }
 
-        public byte[] GenerateStorageFeesReport()
+        public byte[] GenerateStorageFeesReport(int? month = null, int? year = null)
         {
             using var package = new ExcelPackage();
             var sheet = package.Workbook.Worksheets.Add("Storage Fees");
 
-            // Header
             sheet.Cells[1, 1].Value = "ID";
             sheet.Cells[1, 2].Value = "Product Name";
             sheet.Cells[1, 3].Value = "Weight (kg)";
@@ -73,7 +75,6 @@ namespace WMS.BLL.Services
             sheet.Cells[1, 5].Value = "Total Fee ($)";
             sheet.Cells[1, 6].Value = "Calculated At";
 
-            // تنسيق الـ Header
             using (var range = sheet.Cells[1, 1, 1, 6])
             {
                 range.Style.Font.Bold = true;
@@ -82,11 +83,14 @@ namespace WMS.BLL.Services
                 range.Style.Font.Color.SetColor(System.Drawing.Color.White);
             }
 
-            // Data
-            var fees = _context.StorageFees.ToList();
-            for (int i = 0; i < fees.Count; i++)
+            var fees = _context.StorageFees.AsQueryable();
+            if (month.HasValue && year.HasValue)
+                fees = fees.Where(f => f.CalculatedAt.Month == month && f.CalculatedAt.Year == year);
+
+            var list = fees.ToList();
+            for (int i = 0; i < list.Count; i++)
             {
-                var f = fees[i];
+                var f = list[i];
                 var product = _context.Products.FirstOrDefault(p => p.Id == f.ProductId);
                 sheet.Cells[i + 2, 1].Value = f.Id;
                 sheet.Cells[i + 2, 2].Value = product?.Name ?? "Unknown";
@@ -100,19 +104,17 @@ namespace WMS.BLL.Services
             return package.GetAsByteArray();
         }
 
-        public byte[] GenerateLogsReport()
+        public byte[] GenerateLogsReport(int? month = null, int? year = null)
         {
             using var package = new ExcelPackage();
             var sheet = package.Workbook.Worksheets.Add("Logs");
 
-            // Header
             sheet.Cells[1, 1].Value = "ID";
             sheet.Cells[1, 2].Value = "Type";
             sheet.Cells[1, 3].Value = "Recipient Email";
             sheet.Cells[1, 4].Value = "Message";
             sheet.Cells[1, 5].Value = "Sent At";
 
-            // تنسيق الـ Header
             using (var range = sheet.Cells[1, 1, 1, 5])
             {
                 range.Style.Font.Bold = true;
@@ -121,11 +123,14 @@ namespace WMS.BLL.Services
                 range.Style.Font.Color.SetColor(System.Drawing.Color.White);
             }
 
-            // Data
-            var logs = _context.Notifications.ToList();
-            for (int i = 0; i < logs.Count; i++)
+            var logs = _context.Notifications.AsQueryable();
+            if (month.HasValue && year.HasValue)
+                logs = logs.Where(l => l.SentAt.Month == month && l.SentAt.Year == year);
+
+            var list = logs.ToList();
+            for (int i = 0; i < list.Count; i++)
             {
-                var l = logs[i];
+                var l = list[i];
                 sheet.Cells[i + 2, 1].Value = l.Id;
                 sheet.Cells[i + 2, 2].Value = l.Type;
                 sheet.Cells[i + 2, 3].Value = l.RecipientEmail;

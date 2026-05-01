@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WMS.BLL.Interfaces
+﻿namespace WMS.BLL.Interfaces
 {
     public interface IReportService
     {
-        byte[] GenerateProductsReport();
-        byte[] GenerateStorageFeesReport();
-        byte[] GenerateLogsReport();
+        byte[] GenerateProductsReport(int? month = null, int? year = null);
+        byte[] GenerateStorageFeesReport(int? month = null, int? year = null);
+        byte[] GenerateLogsReport(int? month = null, int? year = null);
     }
 }

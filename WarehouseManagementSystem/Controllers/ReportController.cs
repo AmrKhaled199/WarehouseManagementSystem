@@ -13,26 +13,31 @@ namespace WarehouseManagementSystem.Controllers
         {
             _reportService = reportService;
         }
+
         public IActionResult Index()
         {
             return View();
         }
-        public IActionResult DownloadProducts()
+
+        public IActionResult DownloadProducts(int? month, int? year)
         {
-            var file = _reportService.GenerateProductsReport();
-            return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Products.xlsx");
+            var file = _reportService.GenerateProductsReport(month, year);
+            string fileName = month.HasValue ? $"Products_{month}_{year}.xlsx" : "Products_All.xlsx";
+            return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
 
-        public IActionResult DownloadStorageFees()
+        public IActionResult DownloadStorageFees(int? month, int? year)
         {
-            var file = _reportService.GenerateStorageFeesReport();
-            return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "StorageFees.xlsx");
+            var file = _reportService.GenerateStorageFeesReport(month, year);
+            string fileName = month.HasValue ? $"StorageFees_{month}_{year}.xlsx" : "StorageFees_All.xlsx";
+            return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
 
-        public IActionResult DownloadLogs()
+        public IActionResult DownloadLogs(int? month, int? year)
         {
-            var file = _reportService.GenerateLogsReport();
-            return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Logs.xlsx");
+            var file = _reportService.GenerateLogsReport(month, year);
+            string fileName = month.HasValue ? $"Logs_{month}_{year}.xlsx" : "Logs_All.xlsx";
+            return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
     }
 }

@@ -90,6 +90,7 @@ namespace WarehouseManagementSystem.Controllers
         }
 
         [HttpPost]
+        [AdminOnlyFilter]
         public IActionResult Delete(int id)
         {
             _productService.Delete(id);

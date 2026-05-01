@@ -18,7 +18,6 @@
 
     <div class="container mt-4">
 
-        <!-- إجماليات + زر إضافة -->
         <div class="row g-3 mb-4">
             <div class="col-md-4">
                 <div class="card text-white bg-primary shadow text-center p-3">
@@ -37,7 +36,6 @@
             </div>
         </div>
 
-        <!-- الجدول -->
         <div class="card shadow">
             <div class="card-header bg-dark text-white">
                 <h5 class="mb-0">📋 Products List</h5>
@@ -87,12 +85,15 @@
                                         </form>
                                     }
 
-                                    <form method="post" action="/Product/Delete/@p.Id" style="display:inline">
-                                        <button type="submit" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Are you sure you want to delete?')">
-                                            Delete
-                                        </button>
-                                    </form>
+                                    @if (Context.Session.GetString("UserRole") == "Admin")
+                                    {
+                                        <form method="post" action="/Product/Delete/@p.Id" style="display:inline">
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Are you sure you want to delete?')">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    }
                                 </td>
                             </tr>
                         }
