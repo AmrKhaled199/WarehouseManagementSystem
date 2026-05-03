@@ -1,11 +1,23 @@
-﻿@model WarehouseManagementSystem.ViewModels.ProductViewModel
+@model WarehouseManagementSystem.ViewModels.ProductViewModel
 @{
     ViewData["Title"] = "Add Product";
 }
 
-<div class="card shadow mx-auto mt-4" style="max-width:700px">
-    <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">📦 Add New Product</h5>
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h4 style="font-family:'Syne',sans-serif;font-weight:700;margin:0">
+            <i data-lucide="package-plus" style="width:22px;height:22px;margin-right:8px;color:#22c55e;vertical-align:middle"></i>Add New Product
+        </h4>
+        <p style="color:var(--text-secondary);font-size:13px;margin:2px 0 0 30px">Receive new goods into warehouse</p>
+    </div>
+    <a href="/Product/Index" class="btn btn-dark">
+        <i data-lucide="arrow-left" style="width:14px;height:14px;margin-right:4px"></i>Back
+    </a>
+</div>
+
+<div class="card mx-auto" style="max-width:700px">
+    <div class="card-header">
+        <i data-lucide="clipboard-list" style="width:15px;height:15px;margin-right:6px"></i>Product Information
     </div>
     <div class="card-body">
 
@@ -48,7 +60,11 @@
                     <span asp-validation-for="ExpiryDate" class="text-danger small"></span>
                 </div>
 
-                <hr />
+                <div class="col-12">
+                    <div class="form-section-title">
+                        <i data-lucide="mail" style="width:13px;height:13px;margin-right:5px"></i>Contact Information
+                    </div>
+                </div>
 
                 <div class="col-md-6">
                     <label asp-for="SenderName" class="form-label">Sender Name</label>
@@ -75,7 +91,9 @@
                 </div>
 
                 <div class="col-12 mt-2">
-                    <button type="submit" class="btn btn-success w-100">💾 Save Product</button>
+                    <button type="submit" class="btn btn-success w-100">
+                        <i data-lucide="save" style="width:15px;height:15px;margin-right:6px"></i>Save Product
+                    </button>
                 </div>
 
             </div>

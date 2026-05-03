@@ -1,0 +1,95 @@
+@model IEnumerable<WMS.Models.User>
+@{
+    ViewData["Title"] = "Manage Users";
+    var currentUserId = Context.Session.GetString("UserId");
+}
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h4 style="font-family:'Syne',sans-serif;font-weight:700;margin:0">
+            <i data-lucide="users" style="width:22px;height:22px;margin-right:8px;color:#4f8ef7;vertical-align:middle"></i>Manage Users
+        </h4>
+        <p style="color:var(--text-secondary);font-size:13px;margin:2px 0 0 30px">Control user roles and access</p>
+    </div>
+    <span class="badge bg-secondary">@Model.Count() users</span>
+</div>
+
+<div class="card">
+    <div class="card-body">
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success mb-3">
+                <i data-lucide="check-circle" style="width:15px;height:15px;margin-right:6px"></i>@TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger mb-3">
+                <i data-lucide="alert-circle" style="width:15px;height:15px;margin-right:6px"></i>@TempData["Error"]
+            </div>
+        }
+
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Joined</th>
+                    <th>Change Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td style="color:var(--text-muted)">@user.Id</td>
+                        <td style="font-weight:500">
+                            <i data-lucide="user" style="width:13px;height:13px;margin-right:5px;color:var(--text-muted)"></i>
+                            @user.FullName
+                            @if (currentUserId == user.Id.ToString())
+                            {
+                                <span class="badge bg-primary ms-1">You</span>
+                            }
+                        </td>
+                        <td style="color:var(--text-secondary)">@user.Email</td>
+                        <td>
+                            @if (user.Role == "Admin")
+                            {
+                                <span class="badge bg-danger">
+                                    <i data-lucide="shield" style="width:11px;height:11px;margin-right:3px"></i>Admin
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">
+                                    <i data-lucide="user" style="width:11px;height:11px;margin-right:3px"></i>Staff
+                                </span>
+                            }
+                        </td>
+                        <td style="color:var(--text-secondary)">@user.CreatedAt.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @if (currentUserId != user.Id.ToString())
+                            {
+                                <form method="post" asp-action="ChangeRole" style="display:inline">
+                                    <input type="hidden" name="id" value="@user.Id" />
+                                    <select name="newRole" class="form-select form-select-sm d-inline w-auto"
+                                            onchange="this.form.submit()">
+                                        <option value="Staff" selected="@(user.Role == "Staff" ? "selected" : null)">Staff</option>
+                                        <option value="Admin" selected="@(user.Role == "Admin" ? "selected" : null)">Admin</option>
+                                    </select>
+                                </form>
+                            }
+                            else
+                            {
+                                <span style="color:var(--text-muted);font-size:12px">Cannot change own role</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

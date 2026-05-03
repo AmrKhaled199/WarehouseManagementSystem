@@ -1,24 +1,60 @@
 ﻿<!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WMS</title>
+    <title>@ViewData["Title"] — WMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/wms-dark.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;700&display=swap" rel="stylesheet" />
 </head>
-<body class="bg-light">
+<body>
 
-    <nav class="navbar navbar-dark bg-dark px-4">
-        <a class="navbar-brand" href="/Home/Index">🏭 Khaled Family WMS</a>
-        <div class="d-flex align-items-center gap-3">
+    <nav class="navbar">
+        <a class="navbar-brand" href="/Home/Index" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+            <svg width="36" height="36" viewBox="0 0 58 60" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="29,2 55,17 55,47 29,62 3,47 3,17" fill="none" stroke="#2055c7" stroke-width="1.5" />
+                <polygon points="29,10 49,22 49,46 29,58 9,46 9,22" fill="#0d1b3e" />
+                <rect x="14" y="26" width="5" height="14" rx="1.5" fill="#2055c7" />
+                <rect x="26.5" y="21" width="5" height="19" rx="1.5" fill="#6B9EFF" />
+                <rect x="39" y="26" width="5" height="14" rx="1.5" fill="#2055c7" />
+                <line x1="14" y1="40" x2="44" y2="40" stroke="#6B9EFF" stroke-width="0.8" opacity="0.5" />
+                <polygon points="29,16 33,21 29,26 25,21" fill="#6B9EFF" />
+                <circle cx="55" cy="17" r="2.5" fill="#2055c7" />
+                <circle cx="3" cy="17" r="2.5" fill="#2055c7" />
+                <circle cx="29" cy="2" r="2.5" fill="#6B9EFF" />
+            </svg>
+            <span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;color:#dce8ff;line-height:1;">
+                Khaled Family <span style="color:#6B9EFF;">WMS</span>
+            </span>
+        </a>
+        <div class="d-flex align-items-center gap-2">
             @if (Context.Session.GetString("UserName") != null)
             {
-                <span class="text-white">👤 @Context.Session.GetString("UserName")</span>
-                <a href="/Product/Add" class="btn btn-outline-success btn-sm">📥 Import</a>
-                <a href="/Product/Index" class="btn btn-outline-warning btn-sm">📤 Export</a>
-                <a href="/Report/Index" class="btn btn-outline-info btn-sm">📊 Reports</a>
-                <a href="/Log/Index" class="btn btn-outline-light btn-sm">📋 Logs</a>
-                <a href="/Account/Logout" class="btn btn-outline-danger btn-sm">Exit</a>
+                <span style="font-size:12px;color:#4a4f60;margin-right:4px">
+                    @Context.Session.GetString("UserName")
+                </span>
+                <a href="/Product/Add" class="btn btn-sm">
+                    <i data-lucide="package-plus" style="width:14px;height:14px;margin-right:4px"></i>Import
+                </a>
+                <a href="/Product/Index" class="btn btn-sm">
+                    <i data-lucide="boxes" style="width:14px;height:14px;margin-right:4px"></i>Products
+                </a>
+                <a href="/Report/Index" class="btn btn-sm">
+                    <i data-lucide="bar-chart-2" style="width:14px;height:14px;margin-right:4px"></i>Reports
+                </a>
+                <a href="/Log/Index" class="btn btn-sm">
+                    <i data-lucide="bell" style="width:14px;height:14px;margin-right:4px"></i>Logs
+                </a>
+                @if (Context.Session.GetString("UserRole") == "Admin")
+                {
+                    <a href="/User/Index" class="btn btn-sm">
+                        <i data-lucide="users" style="width:14px;height:14px;margin-right:4px"></i>Users
+                    </a>
+                }
+                <a href="/Account/Logout" class="btn btn-sm btn-outline-danger">
+                    <i data-lucide="log-out" style="width:14px;height:14px;margin-right:4px"></i>Exit
+                </a>
             }
         </div>
     </nav>
@@ -27,11 +63,14 @@
         @RenderBody()
     </div>
 
-    <footer class="text-center text-muted mt-5 mb-3">
-        <small>WMS - Khaled Family © 2026</small>
+    <footer>
+        WMS — Khaled Family &copy; 2026
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     @RenderSection("Scripts", required: false)
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>lucide.createIcons();</script>
 
 </body>
 </html>

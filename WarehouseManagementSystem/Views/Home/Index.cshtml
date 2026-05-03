@@ -1,103 +1,68 @@
-﻿@{
-    ViewData["Title"] = "الرئيسية";
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<!DOCTYPE html>
-<html dir="rtl" lang="ar">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WMS - Home</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-</head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-dark px-4">
-        <span class="navbar-brand">🏭Khaled Family Warehouse Management System</span>
-        <div class="d-flex align-items-center text-white gap-3">
-            <span>Welcome، @ViewBag.UserName</span>
-            <a href="/Account/Logout" class="btn btn-outline-light btn-sm">Exit</a>
-        </div>
-    </nav>
+<div class="welcome-banner">
+    <h4>👋 Welcome back, @ViewBag.UserName</h4>
+    <p>Logged in as <strong style="color:#4f8ef7">@ViewBag.UserRole</strong> — Khaled Family Warehouse</p>
+</div>
 
-    <div class="container mt-5">
-        <!-- Welcome Card -->
-        <div class="alert alert-success">
-            <h4>Welcome @ViewBag.UserName 👋</h4>
-            <p>You are logged in as <strong>@ViewBag.UserRole</strong></p>
-        </div>
-
-        <!-- Stats Row -->
-        <div class="row g-3 mb-4">
-            <div class="col-md-6">
-                <div class="card text-white bg-dark shadow text-center p-3">
-                    <h6 class="mb-1">📦 Total Products in Warehouse</h6>
-                    <h2 class="fw-bold">@ViewBag.TotalCount</h2>
-                </div>
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="stat-card">
+            <div class="stat-label">
+                <i data-lucide="package" style="width:13px;height:13px;margin-right:5px"></i>Products in Warehouse
             </div>
-            <div class="col-md-6">
-                <div class="card text-white bg-secondary shadow text-center p-3">
-                    <h6 class="mb-1">⚖️ Total Weight</h6>
-                    <h2 class="fw-bold">@ViewBag.TotalWeight kg</h2>
-                </div>
-            </div>
-        </div>
-
-        <!-- Dashboard Cards -->
-        <div class="row g-4">
-
-            <!-- Products Card - مربوط بصفحة Index -->
-            <div class="col-md-3">
-                <a href="/Product/Index" class="text-decoration-none">
-                    <div class="card text-white bg-primary shadow h-100">
-                        <div class="card-body text-center">
-                            <h2>📦</h2>
-                            <h5>Products</h5>
-                            <p>Inventory Management</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Imports Card -->
-            <div class="col-md-3">
-                <a href="/Product/Add" class="text-decoration-none">
-                    <div class="card text-white bg-success shadow h-100">
-                        <div class="card-body text-center">
-                            <h2>📥</h2>
-                            <h5>Imports</h5>
-                            <p>Receiving Goods</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Exports Card -->
-            <div class="col-md-3">
-                <a href="/Product/Index" class="text-decoration-none">
-                    <div class="card text-white bg-warning shadow h-100">
-                        <div class="card-body text-center">
-                            <h2>📤</h2>
-                            <h5>Exports</h5>
-                            <p>Shipping Goods</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-3">
-                <a href="/Report/Index" class="text-decoration-none">
-                    <div class="card text-white bg-danger shadow h-100">
-                        <div class="card-body text-center">
-                            <h2>📊</h2>
-                            <h5>Reports</h5>
-                            <p>Excel Reports</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
+            <div class="stat-value">@ViewBag.TotalCount</div>
+            <div class="stat-unit">of 1,000 max capacity</div>
         </div>
     </div>
-</body>
-</html>
+    <div class="col-md-6">
+        <div class="stat-card">
+            <div class="stat-label">
+                <i data-lucide="scale" style="width:13px;height:13px;margin-right:5px"></i>Total Weight
+            </div>
+            <div class="stat-value">@ViewBag.TotalWeight</div>
+            <div class="stat-unit">kg — of 3,000 kg max</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-3">
+        <a href="/Product/Index" class="action-card">
+            <span class="action-icon">
+                <i data-lucide="boxes" style="width:32px;height:32px;color:#4f8ef7"></i>
+            </span>
+            <div class="action-title">Products</div>
+            <div class="action-desc">Inventory management</div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="/Product/Add" class="action-card">
+            <span class="action-icon">
+                <i data-lucide="package-plus" style="width:32px;height:32px;color:#22c55e"></i>
+            </span>
+            <div class="action-title">Import</div>
+            <div class="action-desc">Receive new goods</div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="/Report/Index" class="action-card">
+            <span class="action-icon">
+                <i data-lucide="bar-chart-2" style="width:32px;height:32px;color:#f59e0b"></i>
+            </span>
+            <div class="action-title">Reports</div>
+            <div class="action-desc">Excel exports</div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="/Log/Index" class="action-card">
+            <span class="action-icon">
+                <i data-lucide="bell" style="width:32px;height:32px;color:#38bdf8"></i>
+            </span>
+            <div class="action-title">Logs</div>
+            <div class="action-desc">Notification history</div>
+        </a>
+    </div>
+</div>
