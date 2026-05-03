@@ -44,7 +44,7 @@ namespace WarehouseManagementSystem.Controllers
 
             return RedirectToAction("Index", "Home");
         }
-        
+
 
 
         // GET: Register
@@ -63,7 +63,7 @@ namespace WarehouseManagementSystem.Controllers
             {
                 FullName = model.FullName,
                 Email = model.Email,
-                Role = model.Role
+                Role = "Staff"  // دايماً Staff — Admin بيتعمل يدوي من الـ Database
             };
 
             bool result = _authService.Register(user, model.Password);
@@ -79,7 +79,7 @@ namespace WarehouseManagementSystem.Controllers
             HttpContext.Session.SetString("UserRole", newUser.Role);
 
             return RedirectToAction("Index", "Home");
-            
+
         }
 
         // Logout

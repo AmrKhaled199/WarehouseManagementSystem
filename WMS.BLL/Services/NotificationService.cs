@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Microsoft.Extensions.Configuration;
+using System.Net;
 using System.Net.Mail;
 using WMS.BLL.Interfaces;
 using WMS.DAL;
@@ -9,25 +10,29 @@ namespace WMS.BLL.Services
     public class NotificationService : INotificationService
     {
         private readonly AppDbContext _context;
-        private const string SmtpHost = "smtp.gmail.com";
-        private const int SmtpPort = 587;
-        private const string SenderEmail = "fmobile098@gmail.com";
-        private const string SenderPassword = "vtfj imrk lhlc aafv";
+        private readonly string _smtpHost;
+        private readonly int _smtpPort;
+        private readonly string _senderEmail;
+        private readonly string _senderPassword;
 
-        public NotificationService(AppDbContext context)
+        public NotificationService(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _smtpHost = configuration["EmailSettings:SmtpHost"] ?? "smtp.gmail.com";
+            _smtpPort = int.Parse(configuration["EmailSettings:SmtpPort"] ?? "587");
+            _senderEmail = configuration["EmailSettings:SenderEmail"] ?? "";
+            _senderPassword = configuration["EmailSettings:SenderPassword"] ?? "";
         }
 
         private async Task SendEmail(string toEmail, string subject, string body, string type, int productId)
         {
-            using var client = new SmtpClient(SmtpHost, SmtpPort)
+            using var client = new SmtpClient(_smtpHost, _smtpPort)
             {
                 EnableSsl = true,
-                Credentials = new NetworkCredential(SenderEmail, SenderPassword)
+                Credentials = new NetworkCredential(_senderEmail, _senderPassword)
             };
 
-            var message = new MailMessage(SenderEmail, toEmail, subject, body);
+            var message = new MailMessage(_senderEmail, toEmail, subject, body);
             await client.SendMailAsync(message);
 
             _context.Notifications.Add(new Notification

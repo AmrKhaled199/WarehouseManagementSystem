@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WarehouseManagementSystem.Filters;
 using WarehouseManagementSystem.Models;
+using WMS.BLL.Interfaces;
 
 namespace WarehouseManagementSystem.Controllers
 {
@@ -9,10 +10,18 @@ namespace WarehouseManagementSystem.Controllers
 
     public class HomeController : Controller
     {
+        private readonly IProductService _productService;
+
+        public HomeController(IProductService productService)
+        {
+            _productService = productService;
+        }
         public IActionResult Index()
         {
             ViewBag.UserName = HttpContext.Session.GetString("UserName");
-            ViewBag.userRole = HttpContext.Session.GetString("UserRole");
+            ViewBag.UserRole = HttpContext.Session.GetString("UserRole");
+            ViewBag.TotalCount = _productService.GetTotalCount();
+            ViewBag.TotalWeight = _productService.GetTotalWeight();
             return View();
         }
 
