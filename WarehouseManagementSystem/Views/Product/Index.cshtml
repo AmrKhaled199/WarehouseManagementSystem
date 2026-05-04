@@ -1,6 +1,7 @@
 @model IEnumerable<WMS.Models.Product>
 @{
     ViewData["Title"] = "Products";
+    var search = ViewBag.Search as string ?? "";
 }
 
 <div class="d-flex align-items-center justify-content-between mb-4">
@@ -37,19 +38,57 @@
 </div>
 
 <div class="card">
-    <div class="card-header d-flex align-items-center justify-content-between">
+    <div class="card-header d-flex align-items-center justify-content-between" style="flex-wrap:wrap;gap:10px;">
         <span>
             <i data-lucide="list" style="width:15px;height:15px;margin-right:6px"></i>Products List
         </span>
-        <span class="badge bg-secondary">@Model.Count() items</span>
+
+        <!-- Search Form — Server-Side -->
+        <form method="get" asp-action="Index" style="display:flex;gap:6px;flex:1;max-width:360px;">
+            <div style="position:relative;flex:1;">
+                <i data-lucide="search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text-muted);pointer-events:none;"></i>
+                <input name="search"
+                       type="text"
+                       value="@search"
+                       placeholder="Name, category, sender, receiver..."
+                       class="form-control form-control-sm"
+                       style="padding-left:32px;" />
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary">Search</button>
+            @if (!string.IsNullOrEmpty(search))
+            {
+                <a href="/Product/Index" class="btn btn-sm btn-dark">✕</a>
+            }
+        </form>
+
+        <span class="badge bg-secondary">@Model.Count() items@(string.IsNullOrEmpty(search) ? "" : " found")</span>
     </div>
+
     <div class="card-body p-0">
+
+        @if (!string.IsNullOrEmpty(search))
+        {
+            <div style="padding:10px 16px;font-size:13px;color:var(--text-secondary);border-bottom:1px solid var(--border);">
+                <i data-lucide="search" style="width:13px;height:13px;margin-right:5px"></i>
+                Results for: <strong style="color:var(--text-primary)">"@search"</strong>
+            </div>
+        }
+
         @if (!Model.Any())
         {
             <div class="text-center py-5" style="color:var(--text-muted)">
-                <i data-lucide="package-open" style="width:48px;height:48px;margin-bottom:12px;opacity:0.4"></i>
-                <p>No products in warehouse yet.</p>
-                <a href="/Product/Add" class="btn btn-primary btn-sm">Add First Product</a>
+                @if (!string.IsNullOrEmpty(search))
+                {
+                    <i data-lucide="search-x" style="width:48px;height:48px;margin-bottom:12px;opacity:0.4"></i>
+                    <p>No products match "<strong>@search</strong>"</p>
+                    <a href="/Product/Index" class="btn btn-dark btn-sm">Clear Search</a>
+                }
+                else
+                {
+                    <i data-lucide="package-open" style="width:48px;height:48px;margin-bottom:12px;opacity:0.4"></i>
+                    <p>No products in warehouse yet.</p>
+                    <a href="/Product/Add" class="btn btn-primary btn-sm">Add First Product</a>
+                }
             </div>
         }
         else
@@ -94,7 +133,6 @@
                                     <a href="/Product/Details/@p.Id" class="btn btn-sm btn-info">
                                         <i data-lucide="eye" style="width:13px;height:13px;margin-right:3px"></i>Details
                                     </a>
-
                                     @if (p.Status == "InWarehouse")
                                     {
                                         <form method="post" action="/Product/Deliver/@p.Id" style="display:inline">
@@ -104,7 +142,6 @@
                                             </button>
                                         </form>
                                     }
-
                                     @if (Context.Session.GetString("UserRole") == "Admin")
                                     {
                                         <form method="post" action="/Product/Delete/@p.Id" style="display:inline">

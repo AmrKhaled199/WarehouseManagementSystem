@@ -1,17 +1,12 @@
 @model WMS.Models.Product
 @{
     ViewData["Title"] = "Product Details";
+    var invoiceNum = "WMS-" + Model.Id.ToString("D5");
 }
 
 <style>
-    @@media print {
-        nav, .no-print, footer { display: none !important; }
-        .card { border: 1px solid #ccc !important; box-shadow: none !important; }
-        body { background: white !important; color: black !important; }
-        .print-header { display: block !important; }
-        table th, table td { color: black !important; border-color: #ccc !important; }
-    }
     .print-header { display: none; }
+    .info-box-value { font-weight: 700 !important; color: #e8eaf0 !important; font-size: 15px !important; }
 </style>
 
 <div class="d-flex align-items-center justify-content-between mb-4 no-print">
@@ -21,19 +16,122 @@
         </h4>
         <p style="color:var(--text-secondary);font-size:13px;margin:2px 0 0 30px">@Model.Name</p>
     </div>
-    <a href="/Product/Index" class="btn btn-dark">
-        <i data-lucide="arrow-left" style="width:14px;height:14px;margin-right:4px"></i>Back to List
-    </a>
+    <div class="d-flex gap-2">
+        <button onclick="window.print()" class="btn btn-info">
+            <i data-lucide="printer" style="width:15px;height:15px;margin-right:5px"></i>Print Invoice
+        </button>
+        <a href="/Product/Index" class="btn btn-dark">
+            <i data-lucide="arrow-left" style="width:14px;height:14px;margin-right:4px"></i>Back
+        </a>
+    </div>
 </div>
 
-<div class="print-header text-center mb-4">
-    <h3>🏭 Khaled Family Warehouse Management System</h3>
-    <h5>Product Invoice & Tracking Label</h5>
-    <p>Printed on: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</p>
-    <hr/>
+<div class="print-header">
+    <div class="inv-top">
+        <div>
+            <div class="inv-brand">Khaled Family <span>WMS</span></div>
+            <div class="inv-brand-sub">Warehouse Management System</div>
+        </div>
+        <div>
+            <div class="inv-num-label">Invoice No.</div>
+            <div class="inv-num">@invoiceNum</div>
+            <div class="inv-date">@DateTime.Now.ToString("dd MMM yyyy, HH:mm")</div>
+        </div>
+    </div>
+
+    <div class="inv-title-row">
+        <div class="inv-product-name">@Model.Name</div>
+        @if (Model.Status == "InWarehouse")
+        {
+            <span class="inv-badge inv-badge-blue">In Warehouse</span>
+        }
+        else
+        {
+            <span class="inv-badge inv-badge-green">Delivered</span>
+        }
+    </div>
+
+    <div class="inv-grid4">
+        <div class="inv-box">
+            <div class="inv-box-label">Category</div>
+            <div class="inv-box-value">@Model.Category</div>
+        </div>
+        <div class="inv-box">
+            <div class="inv-box-label">Weight</div>
+            <div class="inv-box-value">@Model.WeightKg kg</div>
+        </div>
+        <div class="inv-box">
+            <div class="inv-box-label">Entry Date</div>
+            <div class="inv-box-value">@Model.EntryDate.ToString("dd/MM/yyyy")</div>
+        </div>
+        <div class="inv-box">
+            <div class="inv-box-label">Expiry Date</div>
+            <div class="inv-box-value" class="info-box-value">@Model.ExpiryDate.ToString("dd/MM/yyyy")</div>
+        </div>
+    </div>
+
+    <div class="inv-section">Contact Information</div>
+    <div class="inv-contact-grid">
+        <div class="inv-contact">
+            <div class="inv-contact-role">Sender</div>
+            <div class="inv-contact-name">@Model.SenderName</div>
+            <div class="inv-contact-email">@Model.SenderEmail</div>
+        </div>
+        <div class="inv-contact">
+            <div class="inv-contact-role">Receiver</div>
+            <div class="inv-contact-name">@Model.ReceiverName</div>
+            <div class="inv-contact-email">@Model.ReceiverEmail</div>
+        </div>
+    </div>
+
+    @if (Model.ExitDate.HasValue)
+    {
+        <div class="inv-section" style="margin-top:16px">Delivery</div>
+        <div class="inv-grid2">
+            <div class="inv-box">
+                <div class="inv-box-label">Exit Date</div>
+                <div class="inv-box-value">@Model.ExitDate.Value.ToString("dd/MM/yyyy HH:mm")</div>
+            </div>
+            <div class="inv-box">
+                <div class="inv-box-label">Storage Duration</div>
+                <div class="inv-box-value">@((Model.ExitDate.Value - Model.EntryDate).Days) days</div>
+            </div>
+        </div>
+    }
+
+    @if (ViewBag.StorageFee != null)
+    {
+        <div class="inv-fee">
+            <div class="inv-fee-title">Storage Fee Summary</div>
+            <div class="inv-fee-row">
+                <span>Rate</span>
+                <span>@ViewBag.StorageFee.RatePerHourPerKg $ / hour / kg</span>
+            </div>
+            <div class="inv-fee-row">
+                <span>Weight</span>
+                <span>@Model.WeightKg kg</span>
+            </div>
+            <div class="inv-fee-row">
+                <span>Calculated At</span>
+                <span>@ViewBag.StorageFee.CalculatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+            <div class="inv-fee-row">
+                <span class="inv-fee-total">Total Amount Due</span>
+                <span class="inv-fee-amount">$@ViewBag.StorageFee.TotalFee</span>
+            </div>
+        </div>
+    }
+
+    <div class="inv-footer">
+        <div class="inv-footer-note">
+            Generated automatically by Khaled Family WMS<br />
+            @DateTime.Now.ToString("dd/MM/yyyy HH:mm") — @invoiceNum
+        </div>
+        <div class="inv-stamp">Khaled Family WMS</div>
+    </div>
 </div>
 
-<div class="card mx-auto" style="max-width:680px">
+<div class="card mx-auto no-print" style="max-width:680px">
     <div class="card-header d-flex align-items-center justify-content-between">
         <span>
             <i data-lucide="package" style="width:15px;height:15px;margin-right:6px"></i>@Model.Name
@@ -52,30 +150,29 @@
         }
     </div>
     <div class="card-body">
-
         <div class="row g-3 mb-4">
             <div class="col-6">
                 <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem">
-                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px">Category</div>
-                    <div style="font-weight:600">@Model.Category</div>
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-bottom:4px">Category</div>
+                    <div style="font-weight:600;color:var(--text-primary)">@Model.Category</div>
                 </div>
             </div>
             <div class="col-6">
                 <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem">
-                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px">Weight</div>
-                    <div style="font-weight:600">@Model.WeightKg kg</div>
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-bottom:4px">Weight</div>
+                    <div style="font-weight:600;color:var(--text-primary)">@Model.WeightKg kg</div>
                 </div>
             </div>
             <div class="col-6">
                 <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem">
-                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px">Entry Date</div>
-                    <div style="font-weight:600">@Model.EntryDate.ToString("dd/MM/yyyy HH:mm")</div>
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-bottom:4px">Entry Date</div>
+                    <div style="font-weight:600" class="info-box-value">@Model.EntryDate.ToString("dd/MM/yyyy HH:mm")</div>
                 </div>
             </div>
             <div class="col-6">
                 <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem">
-                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px">Expiry Date</div>
-                    <div style="font-weight:600">@Model.ExpiryDate.ToString("dd/MM/yyyy")</div>
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-bottom:4px">Expiry Date</div>
+                    <div style="font-weight:600" class="info-box-value">@Model.ExpiryDate.ToString("dd/MM/yyyy")</div>
                 </div>
             </div>
         </div>
@@ -141,12 +238,11 @@
             </div>
         }
 
-        <div class="d-flex gap-2 mt-4 no-print flex-wrap">
+        <div class="d-flex gap-2 mt-4 flex-wrap">
             @if (Model.Status == "InWarehouse")
             {
                 <form method="post" action="/Product/Deliver/@Model.Id">
-                    <button type="submit" class="btn btn-warning"
-                            onclick="return confirm('Confirm delivery?')">
+                    <button type="submit" class="btn btn-warning" onclick="return confirm('Confirm delivery?')">
                         <i data-lucide="check-circle" style="width:15px;height:15px;margin-right:5px"></i>Mark as Delivered
                     </button>
                 </form>
@@ -157,8 +253,7 @@
             @if (Context.Session.GetString("UserRole") == "Admin")
             {
                 <form method="post" action="/Product/Delete/@Model.Id">
-                    <button type="submit" class="btn btn-danger"
-                            onclick="return confirm('Are you sure?')">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">
                         <i data-lucide="trash-2" style="width:15px;height:15px;margin-right:5px"></i>Delete
                     </button>
                 </form>

@@ -74,6 +74,8 @@ namespace WarehouseManagementSystem.Controllers
                 return View(model);
             }
             var newUser = _authService.Login(model.Email, model.Password);
+            if (newUser == null) return RedirectToAction("Login");
+
             HttpContext.Session.SetString("UserId", newUser.Id.ToString());
             HttpContext.Session.SetString("UserName", newUser.FullName);
             HttpContext.Session.SetString("UserRole", newUser.Role);

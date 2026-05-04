@@ -23,11 +23,15 @@ namespace WarehouseManagementSystem.Controllers
             _storageFeeService = storageFeeService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string? search)
         {
-            var products = _productService.GetAll();
+            var products = string.IsNullOrWhiteSpace(search)
+                ? _productService.GetAll()
+                : _productService.Search(search);
+
             ViewBag.TotalCount = _productService.GetTotalCount();
             ViewBag.TotalWeight = _productService.GetTotalWeight();
+            ViewBag.Search = search ?? "";
             return View(products);
         }
 
@@ -59,7 +63,10 @@ namespace WarehouseManagementSystem.Controllers
             }
 
             // ✅ بعد الإضافة: ابعت إيميل دخول واحسب رسوم
-            await _notificationService.SendEntryEmail(product.Id);
+            // Email في try-catch — لو فشل الـ SMTP مش هيكسر الـ flow
+            try { await _notificationService.SendEntryEmail(product.Id); }
+            catch { /* SMTP failure is non-critical — product was saved successfully */ }
+
             _storageFeeService.Calculate(product.Id);
 
             return RedirectToAction("Index");
@@ -82,8 +89,13 @@ namespace WarehouseManagementSystem.Controllers
             _productService.UpdateStatus(id, "Delivered");
 
             // ✅ بعد التسليم: ابعت إيميل خروج وشحن واحسب الرسوم النهائية
-            await _notificationService.SendExitEmail(id);
-            await _notificationService.SendShippingEmail(id);
+            try
+            {
+                await _notificationService.SendExitEmail(id);
+                await _notificationService.SendShippingEmail(id);
+            }
+            catch { /* SMTP failure is non-critical — status was updated successfully */ }
+
             _storageFeeService.Calculate(id);
 
             return RedirectToAction("Index");

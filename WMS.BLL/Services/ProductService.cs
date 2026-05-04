@@ -75,6 +75,23 @@ namespace WMS.BLL.Services
             return true;
         }
 
+        // بيبحث في الاسم والـ Category والمرسل والمستلم
+        public List<Product> Search(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                return GetAll();
+
+            var q = query.Trim().ToLower();
+
+            return _context.Products
+                .Where(p =>
+                    p.Name.ToLower().Contains(q) ||
+                    p.Category.ToLower().Contains(q) ||
+                    p.SenderName.ToLower().Contains(q) ||
+                    p.ReceiverName.ToLower().Contains(q))
+                .ToList();
+        }
+
         // بيحسب إجمالي الوزن الحالي للمنتجات اللي في المخزن (اللي حالتها InWarehouse) ويرجع الرقم.
         public double GetTotalWeight()
         {
@@ -90,9 +107,5 @@ namespace WMS.BLL.Services
                  .Count(p => p.Status == "InWarehouse");
         }
 
-        double IProductService.GetTotalCount()
-        {
-            return GetTotalCount();
-        }
     }
 }

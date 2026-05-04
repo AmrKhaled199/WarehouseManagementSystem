@@ -9,11 +9,12 @@ namespace WMS.BLL.Interfaces
     {
         List<Product> GetAll();
         Product? GetById(int id);
-        bool Add (Product product);
+        bool Add(Product product);
         bool UpdateStatus(int id, string status);
         bool Delete(int id);
         double GetTotalWeight();
-        double GetTotalCount();
+        int GetTotalCount();
+        List<Product> Search(string query);
 
     }
 }
